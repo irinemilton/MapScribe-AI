@@ -20,16 +20,26 @@ import cv2
 import numpy as np
 
 # Import our image processing system
-try:
-    from json_safe_processor import JSONSafeProcessor as MapScribeProcessor
-    PROCESSOR_TYPE = "json_safe"
-except ImportError:
+# Check if we're running on Render (or other cloud platform)
+if os.environ.get('RENDER') or os.environ.get('FLASK_ENV') == 'production':
     try:
-        from working_processor import WorkingProcessor as MapScribeProcessor
-        PROCESSOR_TYPE = "working_smart"
+        from render_processor import RenderProcessor as MapScribeProcessor
+        PROCESSOR_TYPE = "render_optimized"
     except ImportError:
         from simple_processor import SimpleMapProcessor as MapScribeProcessor
-        PROCESSOR_TYPE = "simple"
+        PROCESSOR_TYPE = "simple_fallback"
+else:
+    # Local development - use full processors
+    try:
+        from json_safe_processor import JSONSafeProcessor as MapScribeProcessor
+        PROCESSOR_TYPE = "json_safe"
+    except ImportError:
+        try:
+            from working_processor import WorkingProcessor as MapScribeProcessor
+            PROCESSOR_TYPE = "working_smart"
+        except ImportError:
+            from simple_processor import SimpleMapProcessor as MapScribeProcessor
+            PROCESSOR_TYPE = "simple"
 
 # Flask app configuration
 app = Flask(__name__)
@@ -331,8 +341,10 @@ def api_status():
         'status': 'online',
         'version': '1.0.0',
         'name': 'MapScribe AI',
+        'processor_type': PROCESSOR_TYPE,
+        'environment': os.environ.get('FLASK_ENV', 'development'),
         'supported_formats': list(ALLOWED_EXTENSIONS),
-        'max_file_size_mb': 16,
+        'max_file_size_mb': 64,
         'available_tasks': {
             'task1': 'Word Detection',
             'task2': 'Phrase Detection',
@@ -340,6 +352,11 @@ def api_status():
             'task4': 'Phrase Detection + Recognition (Recommended)'
         }
     })
+
+@app.route('/health')
+def health_check():
+    """Simple health check for monitoring services."""
+    return jsonify({'status': 'healthy', 'timestamp': datetime.now().isoformat()})
 
 
 @app.route('/about')
