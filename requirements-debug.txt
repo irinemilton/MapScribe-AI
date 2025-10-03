@@ -1,0 +1,11 @@
+# Minimal requirements for debugging
+Flask==3.0.3
+Flask-CORS==5.0.0
+Werkzeug==3.0.3
+gunicorn==21.2.0
+
+# Basic image processing (optional)
+Pillow==10.0.1
+
+# For testing
+requests==2.31.0
