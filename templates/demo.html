@@ -1,0 +1,485 @@
+{% extends "base.html" %}
+
+{% block title %}Demo - MapScribe AI{% endblock %}
+
+{% block content %}
+<!-- Demo Hero Section -->
+<section class="hero-section" style="padding: 60px 0;">
+    <div class="container">
+        <h1 class="hero-title" style="font-size: 3rem;">Interactive Demo</h1>
+        <p class="hero-subtitle">Experience MapScribe AI with Sample Historical Maps</p>
+        <p class="hero-description">
+            Try our system with carefully curated historical map samples. 
+            See how AI can unlock the textual treasures hidden in ancient cartography.
+        </p>
+    </div>
+</section>
+
+<!-- Demo Content -->
+<section class="py-5">
+    <div class="container">
+        <!-- Sample Maps Gallery -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card medieval-border">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="fas fa-images me-2"></i>Sample Historical Maps
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-4">Click on any sample map below to process it with MapScribe AI:</p>
+                        
+                        <div class="row">
+                            <!-- Demo Image 1 -->
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="card h-100 sample-card" data-sample="demo">
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                        <i class="fas fa-map fa-4x text-muted"></i>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">Generated Demo Map</h5>
+                                        <p class="card-text">
+                                            A synthetic historical map with European city names including London, Paris, Berlin, Rome, and Madrid.
+                                        </p>
+                                        <div class="mb-2">
+                                            <small class="text-muted">
+                                                <i class="fas fa-language me-1"></i>Language: English<br>
+                                                <i class="fas fa-map-marker-alt me-1"></i>Places: 5<br>
+                                                <i class="fas fa-clock me-1"></i>Era: Modern (Demo)
+                                            </small>
+                                        </div>
+                                        <button class="btn btn-primary w-100" onclick="processSample('demo')">
+                                            <i class="fas fa-play me-2"></i>Process This Map
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sample Map 2 -->
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="card h-100 sample-card" data-sample="london_1800s">
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                        <i class="fas fa-map-marked-alt fa-4x text-muted"></i>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">London 1800s (Simulated)</h5>
+                                        <p class="card-text">
+                                            Simulated 19th century London map with Thames River, Westminster, Tower Bridge, and surrounding areas.
+                                        </p>
+                                        <div class="mb-2">
+                                            <small class="text-muted">
+                                                <i class="fas fa-language me-1"></i>Language: English<br>
+                                                <i class="fas fa-map-marker-alt me-1"></i>Places: 8<br>
+                                                <i class="fas fa-clock me-1"></i>Era: 19th Century
+                                            </small>
+                                        </div>
+                                        <button class="btn btn-primary w-100" onclick="processSample('london_1800s')">
+                                            <i class="fas fa-play me-2"></i>Process This Map
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sample Map 3 -->
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="card h-100 sample-card" data-sample="multilingual">
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                        <i class="fas fa-globe fa-4x text-muted"></i>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">Multilingual Map (Simulated)</h5>
+                                        <p class="card-text">
+                                            Simulated historical map with mixed English and Chinese place names, demonstrating multilingual capabilities.
+                                        </p>
+                                        <div class="mb-2">
+                                            <small class="text-muted">
+                                                <i class="fas fa-language me-1"></i>Languages: English, Chinese<br>
+                                                <i class="fas fa-map-marker-alt me-1"></i>Places: 6<br>
+                                                <i class="fas fa-clock me-1"></i>Era: Mixed Historical
+                                            </small>
+                                        </div>
+                                        <button class="btn btn-primary w-100" onclick="processSample('multilingual')">
+                                            <i class="fas fa-play me-2"></i>Process This Map
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Processing Options -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-cogs me-2"></i>Processing Options
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 col-lg-3 mb-2">
+                                <div class="task-option selected" data-task="task4">
+                                    <div class="text-center">
+                                        <i class="fas fa-map-marked-alt fa-2x mb-2"></i>
+                                        <h6>Place Recognition</h6>
+                                        <small>Best for place names (Recommended)</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3 mb-2">
+                                <div class="task-option" data-task="task3">
+                                    <div class="text-center">
+                                        <i class="fas fa-font fa-2x mb-2"></i>
+                                        <h6>Word Recognition</h6>
+                                        <small>Read individual words</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3 mb-2">
+                                <div class="task-option" data-task="task2">
+                                    <div class="text-center">
+                                        <i class="fas fa-eye fa-2x mb-2"></i>
+                                        <h6>Phrase Detection</h6>
+                                        <small>Find text phrases</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3 mb-2">
+                                <div class="task-option" data-task="task1">
+                                    <div class="text-center">
+                                        <i class="fas fa-search fa-2x mb-2"></i>
+                                        <h6>Word Detection</h6>
+                                        <small>Find individual words</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <h5 class="mt-3">Processing sample map...</h5>
+            <p class="text-muted">Analyzing historical cartographic content with AI.</p>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-container" id="resultsContainer">
+            <div class="card medieval-border">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Demo Results
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- Stats Cards -->
+                    <div class="row mb-4" id="statsCards">
+                        <div class="col-md-3">
+                            <div class="stats-card">
+                                <div class="stats-number" id="detectionsCount">0</div>
+                                <div>Text Regions</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card">
+                                <div class="stats-number" id="placesCount">0</div>
+                                <div>Places Found</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card">
+                                <div class="stats-number" id="processingTime">0</div>
+                                <div>Seconds</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card">
+                                <div class="stats-number" id="avgConfidence">0</div>
+                                <div>Avg Confidence</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sample Information -->
+                    <div class="alert alert-info mb-4" id="sampleInfo">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Sample Map:</strong> <span id="sampleName"></span><br>
+                        <strong>Processing Mode:</strong> <span id="processingMode"></span>
+                    </div>
+
+                    <!-- Recognized Places -->
+                    <div id="recognizedPlaces"></div>
+
+                    <!-- Action Buttons -->
+                    <div class="text-center mt-4">
+                        <button class="btn btn-outline-primary me-2" onclick="tryAnotherSample()">
+                            <i class="fas fa-redo me-2"></i>Try Another Sample
+                        </button>
+                        <a href="{{ url_for('index') }}" class="btn btn-primary">
+                            <i class="fas fa-upload me-2"></i>Upload Your Own Map
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-question-circle me-2"></i>How the Demo Works
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6><i class="fas fa-1 me-2"></i>Sample Selection</h6>
+                                <p>Choose from our curated collection of sample historical maps, each designed to showcase different aspects of MapScribe AI's capabilities.</p>
+                                
+                                <h6><i class="fas fa-2 me-2"></i>Processing Mode</h6>
+                                <p>Select the type of analysis you want to perform. "Place Recognition" (Task 4) is recommended for the best results with place names.</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6><i class="fas fa-3 me-2"></i>AI Analysis</h6>
+                                <p>Our AI system processes the map using computer vision and OCR technology to detect and recognize text elements.</p>
+                                
+                                <h6><i class="fas fa-4 me-2"></i>Results Display</h6>
+                                <p>View detailed results including detected places, confidence scores, coordinates, and spatial relationships.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning mt-3">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Note:</strong> This demo uses simulated processing results to demonstrate the interface and expected output format. 
+                            In a production environment, these would be real AI-generated results from actual historical map analysis.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let selectedTask = 'task4';
+    
+    // Sample data for different maps
+    const sampleData = {
+        demo: {
+            name: 'Generated Demo Map',
+            results: {
+                task_type: 'task4',
+                processing_time: 2.1,
+                detections: [
+                    {bbox: {x: 150, y: 200, width: 80, height: 25}, confidence: 0.92, type: 'phrase'},
+                    {bbox: {x: 300, y: 180, width: 70, height: 22}, confidence: 0.89, type: 'phrase'},
+                    {bbox: {x: 200, y: 350, width: 75, height: 24}, confidence: 0.87, type: 'phrase'},
+                    {bbox: {x: 400, y: 220, width: 65, height: 20}, confidence: 0.85, type: 'phrase'},
+                    {bbox: {x: 250, y: 280, width: 85, height: 26}, confidence: 0.91, type: 'phrase'}
+                ],
+                recognized_texts: [
+                    {text: 'London', confidence: 0.91, language: 'en', bbox: {x: 150, y: 200, width: 80, height: 25}},
+                    {text: 'Paris', confidence: 0.88, language: 'en', bbox: {x: 300, y: 180, width: 70, height: 22}},
+                    {text: 'Berlin', confidence: 0.86, language: 'en', bbox: {x: 200, y: 350, width: 75, height: 24}},
+                    {text: 'Rome', confidence: 0.84, language: 'en', bbox: {x: 400, y: 220, width: 65, height: 20}},
+                    {text: 'Madrid', confidence: 0.90, language: 'en', bbox: {x: 250, y: 280, width: 85, height: 26}}
+                ]
+            }
+        },
+        london_1800s: {
+            name: 'London 1800s Map',
+            results: {
+                task_type: 'task4',
+                processing_time: 3.2,
+                detections: Array(8).fill().map((_, i) => ({
+                    bbox: {x: 100 + i*60, y: 150 + i*40, width: 90 + i*5, height: 22 + i*2},
+                    confidence: 0.82 + i*0.02,
+                    type: 'phrase'
+                })),
+                recognized_texts: [
+                    {text: 'Thames River', confidence: 0.89, language: 'en', bbox: {x: 100, y: 150, width: 120, height: 24}},
+                    {text: 'Westminster', confidence: 0.92, language: 'en', bbox: {x: 160, y: 190, width: 95, height: 22}},
+                    {text: 'Tower Bridge', confidence: 0.87, language: 'en', bbox: {x: 220, y: 230, width: 110, height: 26}},
+                    {text: 'London Bridge', confidence: 0.85, language: 'en', bbox: {x: 280, y: 270, width: 105, height: 24}},
+                    {text: 'Hyde Park', confidence: 0.88, language: 'en', bbox: {x: 340, y: 310, width: 85, height: 22}},
+                    {text: 'Regent Street', confidence: 0.84, language: 'en', bbox: {x: 400, y: 350, width: 100, height: 28}},
+                    {text: 'Piccadilly', confidence: 0.86, language: 'en', bbox: {x: 460, y: 390, width: 90, height: 24}},
+                    {text: 'Covent Garden', confidence: 0.83, language: 'en', bbox: {x: 520, y: 430, width: 110, height: 26}}
+                ]
+            }
+        },
+        multilingual: {
+            name: 'Multilingual Historical Map',
+            results: {
+                task_type: 'task4',
+                processing_time: 2.8,
+                detections: Array(6).fill().map((_, i) => ({
+                    bbox: {x: 120 + i*70, y: 160 + i*35, width: 80 + i*10, height: 20 + i*3},
+                    confidence: 0.79 + i*0.03,
+                    type: 'phrase'
+                })),
+                recognized_texts: [
+                    {text: 'Beijing', confidence: 0.88, language: 'en', bbox: {x: 120, y: 160, width: 80, height: 20}},
+                    {text: '北京', confidence: 0.85, language: 'zh', bbox: {x: 190, y: 195, width: 90, height: 23}},
+                    {text: 'Shanghai', confidence: 0.87, language: 'en', bbox: {x: 260, y: 230, width: 100, height: 26}},
+                    {text: '上海', confidence: 0.84, language: 'zh', bbox: {x: 330, y: 265, width: 110, height: 29}},
+                    {text: 'Guangzhou', confidence: 0.86, language: 'en', bbox: {x: 400, y: 300, width: 120, height: 32}},
+                    {text: '广州', confidence: 0.83, language: 'zh', bbox: {x: 470, y: 335, width: 130, height: 35}}
+                ]
+            }
+        }
+    };
+
+    // Task selection
+    document.querySelectorAll('.task-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.task-option').forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedTask = this.dataset.task;
+        });
+    });
+
+    function processSample(sampleKey) {
+        const sample = sampleData[sampleKey];
+        if (!sample) return;
+
+        // Show loading
+        document.getElementById('loadingSpinner').style.display = 'block';
+        document.getElementById('resultsContainer').style.display = 'none';
+
+        // Simulate processing delay
+        setTimeout(() => {
+            displayDemoResults(sample, selectedTask);
+            document.getElementById('loadingSpinner').style.display = 'none';
+            document.getElementById('resultsContainer').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('resultsContainer').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        }, 2000);
+    }
+
+    function displayDemoResults(sample, task) {
+        const results = sample.results;
+        
+        // Update sample info
+        document.getElementById('sampleName').textContent = sample.name;
+        document.getElementById('processingMode').textContent = getTaskDescription(task);
+
+        // Animate stats
+        animateNumber(document.getElementById('detectionsCount'), results.detections.length);
+        animateNumber(document.getElementById('placesCount'), results.recognized_texts.length);
+        document.getElementById('processingTime').textContent = results.processing_time.toFixed(1);
+        
+        // Calculate average confidence
+        const avgConf = results.recognized_texts.reduce((sum, text) => sum + text.confidence, 0) / results.recognized_texts.length;
+        document.getElementById('avgConfidence').textContent = Math.round(avgConf * 100);
+
+        // Display recognized places
+        const placesContainer = document.getElementById('recognizedPlaces');
+        if (results.recognized_texts && results.recognized_texts.length > 0) {
+            placesContainer.innerHTML = `
+                <h5 class="mb-3">
+                    <i class="fas fa-map-marker-alt me-2"></i>Recognized Places
+                </h5>
+            `;
+            
+            results.recognized_texts.forEach((place, index) => {
+                const placeDiv = document.createElement('div');
+                placeDiv.className = 'place-item';
+                placeDiv.style.animationDelay = `${index * 0.1}s`;
+                placeDiv.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">
+                                <i class="fas fa-map-pin me-2"></i>${place.text}
+                            </h6>
+                            <small class="text-muted">
+                                <i class="fas fa-language me-1"></i>Language: ${place.language} | 
+                                <i class="fas fa-crosshairs me-1"></i>Location: (${place.bbox.x}, ${place.bbox.y}) | 
+                                <i class="fas fa-expand-arrows-alt me-1"></i>Size: ${place.bbox.width}×${place.bbox.height}
+                            </small>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" style="width: ${place.confidence * 100}%"></div>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-primary">${formatConfidence(place.confidence)}</span>
+                        </div>
+                    </div>
+                `;
+                placesContainer.appendChild(placeDiv);
+            });
+        } else {
+            placesContainer.innerHTML = `
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    No places were recognized with the selected processing mode. Try a different mode for different results.
+                </div>
+            `;
+        }
+    }
+
+    function getTaskDescription(task) {
+        const descriptions = {
+            'task1': 'Word Detection',
+            'task2': 'Phrase Detection',
+            'task3': 'Word Detection + Recognition',
+            'task4': 'Phrase Detection + Recognition'
+        };
+        return descriptions[task] || 'Unknown Task';
+    }
+
+    function tryAnotherSample() {
+        document.getElementById('resultsContainer').style.display = 'none';
+        document.querySelector('#upload').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Add some CSS animations
+    const style = document.createElement('style');
+    style.textContent = `
+        .place-item {
+            animation: slideInLeft 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .sample-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .sample-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+{% endblock %}

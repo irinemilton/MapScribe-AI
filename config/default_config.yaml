@@ -1,0 +1,43 @@
+# Default configuration for Historical Map Text Processing System
+# ICDAR 2025 Competition Implementation
+
+detection:
+  model_architecture: "YOLO"
+  model_path: "models/detection/yolo_text_detection.pt"
+  input_size: [640, 640]
+  confidence_threshold: 0.5
+  nms_threshold: 0.4
+  batch_size: 1
+  device: "cpu"
+
+recognition:
+  model_architecture: "CRNN"
+  model_path: "models/recognition/crnn_multilingual.pt"
+  max_sequence_length: 100
+  vocabulary_size: 10000
+  languages: ["en", "zh"]
+  beam_width: 5
+  device: "cpu"
+
+preprocessing:
+  target_size: [1024, 1024]
+  enhance_contrast: true
+  denoise: true
+  normalize: true
+  auto_rotate: true
+  color_space: "RGB"
+
+evaluation:
+  iou_threshold: 0.5
+  confidence_threshold: 0.5
+  calculate_character_accuracy: true
+  calculate_word_accuracy: true
+  save_detailed_results: true
+  output_format: "json"
+
+# System-wide settings
+log_level: "INFO"
+output_dir: "outputs"
+temp_dir: "temp"
+max_workers: 4
+memory_limit_gb: 8.0

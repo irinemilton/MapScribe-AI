@@ -1,0 +1,489 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">MapScribe AI</h1>
+        <p class="hero-subtitle">Unlock the Secrets of Historical Maps</p>
+        <p class="hero-description">
+            Advanced AI-powered text detection and recognition for historical cartography. 
+            Transform ancient maps into searchable, analyzable digital archives with cutting-edge 
+            computer vision and natural language processing technology.
+        </p>
+        <a href="#upload" class="btn btn-primary btn-lg">
+            <i class="fas fa-upload me-2"></i>Start Analyzing Maps
+        </a>
+    </div>
+</section>
+
+<!-- Upload Section -->
+<section id="upload" class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card medieval-border">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="fas fa-map me-2"></i>Upload Your Historical Map
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Task Selection -->
+                        <div class="task-selector">
+                            <h5 class="mb-3">
+                                <i class="fas fa-cogs me-2"></i>Select Processing Mode
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-6 col-lg-3 mb-2">
+                                    <div class="task-option" data-task="task1">
+                                        <div class="text-center">
+                                            <i class="fas fa-search fa-2x mb-2"></i>
+                                            <h6>Word Detection</h6>
+                                            <small>Find individual words</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3 mb-2">
+                                    <div class="task-option" data-task="task2">
+                                        <div class="text-center">
+                                            <i class="fas fa-eye fa-2x mb-2"></i>
+                                            <h6>Phrase Detection</h6>
+                                            <small>Find text phrases</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3 mb-2">
+                                    <div class="task-option" data-task="task3">
+                                        <div class="text-center">
+                                            <i class="fas fa-font fa-2x mb-2"></i>
+                                            <h6>Word Recognition</h6>
+                                            <small>Read individual words</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3 mb-2">
+                                    <div class="task-option selected" data-task="task4">
+                                        <div class="text-center">
+                                            <i class="fas fa-map-marked-alt fa-2x mb-2"></i>
+                                            <h6>Place Recognition</h6>
+                                            <small>Best for place names</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Upload Area -->
+                        <form id="uploadForm" enctype="multipart/form-data">
+                            <div class="upload-area" id="uploadArea">
+                                <i class="fas fa-cloud-upload-alt fa-4x mb-3 text-muted"></i>
+                                <h4>Drop your map here or click to browse</h4>
+                                <p class="text-muted mb-3">
+                                    Supported formats: PNG, JPG, JPEG, TIFF, BMP<br>
+                                    Maximum size: 16MB
+                                </p>
+                                <input type="file" id="fileInput" name="file" accept=".png,.jpg,.jpeg,.tiff,.tif,.bmp" style="display: none;">
+                                <button type="button" class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                                    <i class="fas fa-folder-open me-2"></i>Choose File
+                                </button>
+                            </div>
+                            
+                            <div id="fileInfo" class="mt-3" style="display: none;">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-file-image me-2"></i>
+                                    <span id="fileName"></span>
+                                    <button type="button" class="btn btn-sm btn-outline-danger float-end" onclick="clearFile()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg" id="processBtn" disabled>
+                                    <i class="fas fa-magic me-2"></i>Process Map
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Loading Spinner -->
+                        <div class="loading-spinner" id="loadingSpinner">
+                            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <h5 class="mt-3">Processing your historical map...</h5>
+                            <p class="text-muted">This may take a few moments depending on image size and complexity.</p>
+                        </div>
+
+                        <!-- Results Section -->
+                        <div class="results-container" id="resultsContainer">
+                            <hr class="my-4">
+                            <h4 class="mb-4">
+                                <i class="fas fa-chart-bar me-2"></i>Processing Results
+                            </h4>
+                            
+                            <!-- Stats Cards -->
+                            <div class="row mb-4" id="statsCards">
+                                <div class="col-md-4">
+                                    <div class="stats-card">
+                                        <div class="stats-number" id="detectionsCount">0</div>
+                                        <div>Text Regions</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stats-card">
+                                        <div class="stats-number" id="placesCount">0</div>
+                                        <div>Places Found</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stats-card">
+                                        <div class="stats-number" id="processingTime">0</div>
+                                        <div>Seconds</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recognized Places -->
+                            <div id="recognizedPlaces"></div>
+
+                            <!-- Download Results -->
+                            <div class="text-center mt-4">
+                                <button class="btn btn-outline-primary" id="downloadBtn">
+                                    <i class="fas fa-download me-2"></i>Download Results (JSON)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-4 mb-3">Powerful Features</h2>
+            <p class="lead">Advanced AI technology meets historical cartography</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-search-location feature-icon"></i>
+                        <h5>Text Detection</h5>
+                        <p>Automatically locate text regions on historical maps with high precision using advanced computer vision.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-language feature-icon"></i>
+                        <h5>OCR Recognition</h5>
+                        <p>Convert detected text into readable, searchable content with support for multiple languages and historical scripts.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-map-pin feature-icon"></i>
+                        <h5>Place Mapping</h5>
+                        <p>Identify and catalog place names, creating comprehensive geographic databases from historical sources.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                        <h5>Analytics</h5>
+                        <p>Get detailed confidence scores, spatial coordinates, and comprehensive analysis of processing results.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="display-5 mb-4">About MapScribe AI</h2>
+                <p class="lead">
+                    MapScribe AI represents the cutting edge of historical cartography digitization, 
+                    combining state-of-the-art artificial intelligence with deep understanding of 
+                    historical map characteristics.
+                </p>
+                <p>
+                    Our system uses advanced deep learning models trained specifically for historical 
+                    map text detection and recognition. Whether you're a historian, researcher, 
+                    librarian, or cartography enthusiast, MapScribe AI helps unlock the textual 
+                    information hidden in historical maps.
+                </p>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>YOLO-based text detection</li>
+                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>CRNN text recognition</li>
+                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Multilingual support</li>
+                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Spatial coordinate mapping</li>
+                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>ICDAR 2025 compliant</li>
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <div class="medieval-border">
+                    <h5 class="mb-3">Processing Pipeline</h5>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">1</div>
+                        <div>
+                            <strong>Image Preprocessing</strong><br>
+                            <small class="text-muted">Enhancement and normalization</small>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">2</div>
+                        <div>
+                            <strong>Text Detection</strong><br>
+                            <small class="text-muted">Locate text regions with bounding boxes</small>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">3</div>
+                        <div>
+                            <strong>Text Recognition</strong><br>
+                            <small class="text-muted">Convert images to readable text</small>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">4</div>
+                        <div>
+                            <strong>Spatial Linking</strong><br>
+                            <small class="text-muted">Map coordinates and relationships</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let selectedTask = 'task4';
+    let currentSessionId = null;
+
+    // Task selection
+    document.querySelectorAll('.task-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.task-option').forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedTask = this.dataset.task;
+        });
+    });
+
+    // File upload handling
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
+    const processBtn = document.getElementById('processBtn');
+
+    // Drag and drop
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFileSelect(files[0]);
+        }
+    });
+
+    uploadArea.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleFileSelect(e.target.files[0]);
+        }
+    });
+
+    function handleFileSelect(file) {
+        // Validate file type
+        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/tiff', 'image/bmp'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('Please select a valid image file (PNG, JPG, JPEG, TIFF, BMP)');
+            return;
+        }
+
+        // Validate file size (16MB)
+        if (file.size > 16 * 1024 * 1024) {
+            alert('File size must be less than 16MB');
+            return;
+        }
+
+        fileName.textContent = file.name;
+        fileInfo.style.display = 'block';
+        processBtn.disabled = false;
+    }
+
+    function clearFile() {
+        fileInput.value = '';
+        fileInfo.style.display = 'none';
+        processBtn.disabled = true;
+    }
+
+    // Form submission
+    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        formData.append('task', selectedTask);
+
+        // Show loading
+        document.getElementById('loadingSpinner').style.display = 'block';
+        document.getElementById('resultsContainer').style.display = 'none';
+        
+        const resetButton = addLoadingToButton(processBtn);
+
+        try {
+            // Add timeout to fetch request
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minute timeout
+            
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData,
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status} ${response.statusText}`);
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+                currentSessionId = result.file_id;
+                
+                // Check if we have smart results
+                if (result.smart_results && result.smart_results_url) {
+                    // Redirect to smart results page
+                    window.location.href = result.smart_results_url;
+                } else {
+                    // Display results inline (fallback)
+                    displayResults(result);
+                }
+            } else {
+                throw new Error(result.error || 'Processing failed');
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            let errorMessage = 'Upload failed: ';
+            
+            if (error.name === 'AbortError') {
+                errorMessage += 'Request timeout - image too large or server overloaded';
+            } else if (error.message.includes('Failed to fetch')) {
+                errorMessage += 'Cannot connect to server. Please check if the server is running on localhost:5000';
+            } else {
+                errorMessage += error.message;
+            }
+            
+            alert(errorMessage);
+        } finally {
+            document.getElementById('loadingSpinner').style.display = 'none';
+            resetButton();
+        }
+    });
+
+    function displayResults(result) {
+        // Animate stats
+        const detections = result.results?.detections || [];
+        const textRegions = result.results?.text_regions || [];
+        
+        animateNumber(document.getElementById('detectionsCount'), detections.length);
+        animateNumber(document.getElementById('placesCount'), textRegions.length);
+        document.getElementById('processingTime').textContent = (result.results?.processing_time || 0).toFixed(1);
+
+        // Display recognized places
+        const placesContainer = document.getElementById('recognizedPlaces');
+        if (textRegions && textRegions.length > 0) {
+            placesContainer.innerHTML = `
+                <h5 class="mb-3">
+                    <i class="fas fa-map-marker-alt me-2"></i>Recognized Text
+                </h5>
+            `;
+            
+            textRegions.forEach((place, index) => {
+                const placeDiv = document.createElement('div');
+                placeDiv.className = 'place-item';
+                const bbox = place.bbox || [[0,0],[0,0],[0,0],[0,0]];
+                const topLeft = bbox[0] || [0,0];
+                
+                placeDiv.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">
+                                <i class="fas fa-map-pin me-2"></i>${place.text}
+                            </h6>
+                            <small class="text-muted">
+                                <i class="fas fa-crosshairs me-1"></i>Location: (${topLeft[0]}, ${topLeft[1]}) | 
+                                <i class="fas fa-percentage me-1"></i>Confidence: ${(place.confidence * 100).toFixed(1)}%
+                            </small>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" style="width: ${place.confidence * 100}%"></div>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-primary">${formatConfidence(place.confidence)}</span>
+                        </div>
+                    </div>
+                `;
+                placesContainer.appendChild(placeDiv);
+            });
+        } else {
+            placesContainer.innerHTML = `
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    No places were recognized. Try using a different processing mode or check if your image contains readable text.
+                </div>
+            `;
+        }
+
+        // Setup download button
+        document.getElementById('downloadBtn').onclick = () => {
+            window.open(`/download/${currentSessionId}`, '_blank');
+        };
+
+        // Show results
+        document.getElementById('resultsContainer').style.display = 'block';
+        
+        // Scroll to results
+        document.getElementById('resultsContainer').scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+        });
+    }
+</script>
+{% endblock %}

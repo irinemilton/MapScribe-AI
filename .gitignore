@@ -1,0 +1,184 @@
+# MapScribe AI - Git Ignore File
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# MapScribe AI specific
+static/uploads/*
+!static/uploads/.gitkeep
+static/results/*
+!static/results/.gitkeep
+static/demo/*
+!static/demo/.gitkeep
+
+# Temporary files
+*.tmp
+*.temp
+*_temp.*
+*_tmp.*
+
+# Log files
+*.log
+logs/
+
+# Configuration files with secrets
+config/secrets.yaml
+config/production.yaml
+.env.local
+.env.production
+
+# Model files (too large for git)
+models/*.pth
+models/*.pt
+models/*.onnx
+*.model
+
+# Data files
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# EasyOCR model cache
+.EasyOCR/
+
+# PyTorch model cache
+.cache/torch/
+
+# Temporary image files
+*_resized.*
+*_enhanced.*
+*_processed.*
+*_temp.*
+
+# Results and outputs
+results/
+outputs/
+submissions/
+
+# Documentation build
+docs/_build/
+docs/site/
+
+# Backup files
+*.bak
+*.backup
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Compressed files
+*.zip
+*.tar.gz
+*.rar
+
+# Large test files
+test_images/large/
+test_data/large/
+
+# Performance profiling
+*.prof
+*.profile
+
+# Memory dumps
+*.dump
+
+# Local development
+local/
+scratch/
+playground/
+
+# Docker
+.dockerignore
+Dockerfile.local
+
+# Kubernetes
+k8s/local/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# AWS
+.aws/
+
+# Google Cloud
+.gcloud/
+
+# Azure
+.azure/

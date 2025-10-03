@@ -1,0 +1,207 @@
+# Integration Test Configuration
+# Configuration for comprehensive integration testing of the historical map text processing system
+
+# Test Environment Settings
+test_environment:
+  temp_directory: "tests/temp"
+  output_directory: "tests/reports"
+  sample_data_directory: "tests/sample_data"
+  
+# Performance Benchmarking Configuration
+performance_benchmarks:
+  # Image size configurations for performance testing
+  image_sizes:
+    small: [640, 480]
+    medium: [1024, 768]
+    large: [2048, 1536]
+    very_large: [4096, 3072]
+  
+  # Performance thresholds (in seconds)
+  time_thresholds:
+    preprocessing_max: 5.0
+    detection_max: 10.0
+    recognition_max: 15.0
+    total_pipeline_max: 30.0
+    
+  # Throughput requirements (images per second)
+  throughput_requirements:
+    minimum_throughput: 0.1
+    target_throughput: 1.0
+    
+  # Memory usage limits (MB)
+  memory_limits:
+    preprocessing_max: 200
+    detection_max: 200
+    recognition_max: 200
+    total_increase_max: 500
+
+# Regression Testing Configuration
+regression_testing:
+  # Baseline accuracy thresholds
+  baseline_metrics:
+    task1:
+      precision: 0.85
+      recall: 0.82
+      f1_score: 0.835
+      average_iou: 0.75
+    task2:
+      precision: 0.78
+      recall: 0.76
+      f1_score: 0.77
+      average_iou: 0.70
+    task3:
+      detection:
+        precision: 0.85
+        recall: 0.82
+        f1_score: 0.835
+        average_iou: 0.75
+      recognition:
+        character_accuracy: 0.92
+        word_accuracy: 0.88
+        exact_match_accuracy: 0.85
+    task4:
+      detection:
+        precision: 0.78
+        recall: 0.76
+        f1_score: 0.77
+        average_iou: 0.70
+      recognition:
+        character_accuracy: 0.89
+        word_accuracy: 0.84
+        exact_match_accuracy: 0.80
+  
+  # Regression tolerance (maximum allowed degradation)
+  regression_tolerance: 0.05  # 5%
+  
+  # Stability requirements
+  accuracy_stability:
+    max_standard_deviation: 0.1
+    min_mean_accuracy: 0.7
+    outlier_threshold: 2.0  # standard deviations
+
+# Competition Format Compliance Configuration
+competition_compliance:
+  # ICDAR 2025 format requirements
+  format_requirements:
+    task1:
+      required_fields: ["x1", "y1", "x2", "y2"]
+      coordinate_precision: 2
+      separator: ","
+    task2:
+      required_fields: ["x1", "y1", "x2", "y2"]
+      coordinate_precision: 2
+      separator: ","
+    task3:
+      required_fields: ["x1", "y1", "x2", "y2", "text"]
+      coordinate_precision: 2
+      separator: ","
+      text_encoding: "utf-8"
+    task4:
+      required_fields: ["x1", "y1", "x2", "y2", "text"]
+      coordinate_precision: 2
+      separator: ","
+      text_encoding: "utf-8"
+  
+  # Validation rules
+  validation_rules:
+    coordinates_non_negative: true
+    coordinates_integer: false  # Allow floating point
+    text_non_empty: true
+    proper_encoding: true
+    
+  # Edge case testing
+  edge_cases:
+    test_empty_results: true
+    test_single_detection: true
+    test_multilingual_text: true
+    test_special_characters: true
+
+# End-to-End Pipeline Configuration
+end_to_end_testing:
+  # Sample image configurations
+  sample_images:
+    count: 4
+    types:
+      - standard_map
+      - high_resolution_map
+      - degraded_map
+      - multilingual_map
+  
+  # Pipeline validation
+  pipeline_validation:
+    verify_preprocessing: true
+    verify_detection_quality: true
+    verify_recognition_accuracy: true
+    verify_format_compliance: true
+    verify_performance_requirements: true
+  
+  # Quality thresholds
+  quality_thresholds:
+    min_detections_per_image: 1
+    min_confidence_score: 0.0
+    max_confidence_score: 1.0
+    min_bbox_width: 1
+    min_bbox_height: 1
+    min_text_length: 1
+
+# Test Data Generation Configuration
+test_data_generation:
+  # Historical map simulation parameters
+  historical_maps:
+    background_color_range: [200, 240]  # Aged paper color range
+    text_density: 0.1  # Percentage of image area with text
+    degradation_levels: [0.0, 0.2, 0.4, 0.6]  # None to heavy degradation
+    
+  # Text generation parameters
+  text_generation:
+    languages: ["en", "zh"]
+    word_lengths: [3, 12]  # Min and max word length
+    phrase_lengths: [2, 6]  # Min and max words per phrase
+    confidence_ranges:
+      high: [0.8, 1.0]
+      medium: [0.5, 0.8]
+      low: [0.2, 0.5]
+  
+  # Bounding box generation
+  bbox_generation:
+    min_width: 20
+    max_width: 200
+    min_height: 15
+    max_height: 50
+    overlap_probability: 0.1  # Probability of overlapping boxes
+
+# Reporting Configuration
+reporting:
+  # Report formats to generate
+  formats:
+    - json
+    - text
+    - html
+  
+  # Report sections to include
+  sections:
+    executive_summary: true
+    detailed_results: true
+    performance_analysis: true
+    regression_analysis: true
+    compliance_validation: true
+    recommendations: true
+  
+  # Performance charts and graphs
+  visualizations:
+    performance_charts: true
+    accuracy_trends: true
+    compliance_matrix: true
+    
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file_output: true
+  console_output: true
+  
+# Parallel Execution Configuration
+parallel_execution:
+  enabled: false  # Disable for now to avoid complexity
+  max_workers: 4
+  timeout_per_test: 300  # 5 minutes per test

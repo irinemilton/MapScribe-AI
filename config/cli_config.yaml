@@ -1,0 +1,69 @@
+# CLI Configuration for Historical Map Text Processing System
+
+# Default processing settings
+processing:
+  # Default task settings
+  default_task: "task1"
+  
+  # Output settings
+  output:
+    default_format: "txt"
+    create_directories: true
+    overwrite_existing: false
+    save_intermediate: false
+  
+  # Batch processing settings
+  batch:
+    default_parallel: 1
+    max_parallel: 8
+    resume_enabled: true
+    progress_reporting: true
+    
+# Model settings
+models:
+  # Detection models
+  detection:
+    default_model: "yolo"
+    confidence_threshold: 0.5
+    nms_threshold: 0.4
+    
+  # Recognition models  
+  recognition:
+    default_model: "crnn"
+    confidence_threshold: 0.3
+    beam_width: 5
+
+# File patterns for batch processing
+file_patterns:
+  images: "*.{jpg,jpeg,png,tiff,tif,bmp}"
+  results: "*_results.txt"
+  configs: "*.{yaml,yml,json}"
+
+# Logging configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(levelname)s - %(message)s"
+  file_logging: false
+  log_file: "processing.log"
+
+# Competition task definitions
+tasks:
+  task1:
+    name: "Word Detection"
+    description: "Detect individual word boundaries"
+    output_format: "bbox_only"
+    
+  task2:
+    name: "Phrase Detection"
+    description: "Detect phrase boundaries"
+    output_format: "bbox_only"
+    
+  task3:
+    name: "Word Detection + Recognition"
+    description: "Detect and recognize individual words"
+    output_format: "bbox_with_text"
+    
+  task4:
+    name: "Phrase Detection + Recognition"
+    description: "Detect and recognize phrases"
+    output_format: "bbox_with_text"
