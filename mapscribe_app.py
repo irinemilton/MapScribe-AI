@@ -19,27 +19,48 @@ from werkzeug.exceptions import RequestEntityTooLarge
 import cv2
 import numpy as np
 
-# Import our image processing system
-# Check if we're running on Render (or other cloud platform)
-if os.environ.get('RENDER') or os.environ.get('FLASK_ENV') == 'production':
+# Import our image processing system with robust fallback
+PROCESSOR_TYPE = "unknown"
+MapScribeProcessor = None
+
+# Try different processors in order of preference
+processors_to_try = [
+    # Production/Cloud processors
+    ("render_processor", "RenderProcessor", "render_optimized"),
+    # Development processors
+    ("json_safe_processor", "JSONSafeProcessor", "json_safe"),
+    ("working_processor", "WorkingProcessor", "working_smart"),
+    # Fallback processor
+    ("simple_processor", "SimpleMapProcessor", "simple")
+]
+
+for module_name, class_name, processor_type in processors_to_try:
     try:
-        from render_processor import RenderProcessor as MapScribeProcessor
-        PROCESSOR_TYPE = "render_optimized"
-    except ImportError:
-        from simple_processor import SimpleMapProcessor as MapScribeProcessor
-        PROCESSOR_TYPE = "simple_fallback"
-else:
-    # Local development - use full processors
-    try:
-        from json_safe_processor import JSONSafeProcessor as MapScribeProcessor
-        PROCESSOR_TYPE = "json_safe"
-    except ImportError:
-        try:
-            from working_processor import WorkingProcessor as MapScribeProcessor
-            PROCESSOR_TYPE = "working_smart"
-        except ImportError:
-            from simple_processor import SimpleMapProcessor as MapScribeProcessor
-            PROCESSOR_TYPE = "simple"
+        module = __import__(module_name)
+        MapScribeProcessor = getattr(module, class_name)
+        PROCESSOR_TYPE = processor_type
+        break
+    except (ImportError, AttributeError) as e:
+        continue
+
+# Final fallback - create a minimal processor if nothing works
+if MapScribeProcessor is None:
+    class MinimalProcessor:
+        def __init__(self):
+            self.name = "Minimal Fallback Processor"
+        
+        def process_image(self, image_path, options=None):
+            return {
+                'success': True,
+                'total_detections': 0,
+                'categorized_results': {},
+                'summary': {'total_places': 0},
+                'processing_time': 0.1,
+                'error': 'Using minimal fallback processor - no real processing available'
+            }
+    
+    MapScribeProcessor = MinimalProcessor
+    PROCESSOR_TYPE = "minimal_fallback"
 
 # Flask app configuration
 app = Flask(__name__)

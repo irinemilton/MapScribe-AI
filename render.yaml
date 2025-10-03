@@ -3,7 +3,7 @@ services:
     name: mapscribe-ai
     env: python
     buildCommand: "./render-build.sh"
-    startCommand: "gunicorn app:app"
+    startCommand: "gunicorn app:application"
     plan: free
     envVars:
       - key: PYTHON_VERSION
